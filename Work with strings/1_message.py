@@ -86,4 +86,4 @@ def reverse_message_step_words(message:str) -> str:
 
 
 user_message = get_message()
-print(reverse_message_step_words(user_message))
+print(f"New message: {reverse_message_step_words(user_message)}")
