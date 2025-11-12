@@ -14,7 +14,7 @@ Implement this program.
 
 Message: Hello how are you?
 
-result:
+"result:
 
  : 3
 ?: 1
@@ -31,6 +31,6 @@ y: 1
 
 1: ['H', 'h', 'w', 'a', 'r', 'y', 'u', '?']
 2: ['e', 'l']
-3: ['o', ' ']
+3: ['o', ' ']"
 
 
