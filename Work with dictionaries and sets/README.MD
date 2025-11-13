@@ -1,4 +1,4 @@
-## 🧩 Task 1 — Message Complexity of Algorithm:**
+## 🧩 Task 1 — Message Complexity of Algorithm:
 
 ### 📝 What Needs to Be Done
 
@@ -10,7 +10,7 @@ Implement this program.
 
 ---
 
-## 🧩 Task 2 — Is palindrome?**
+## 🧩 Task 2 — Is palindrome?
 
 ### 📝 What Needs to Be Done
 
