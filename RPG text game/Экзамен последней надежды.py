@@ -3,16 +3,16 @@ import time
 from math import ceil
 
 def update_character_stats(actor):
-    actor['vit'] += actor['health_boost']
-    actor['dex'] += actor['dex_boost']
-    actor['force'] += actor['force_boost']
-    actor['def'] += actor['protect_boost']
-    actor['current_max_health'] = (actor['max_health_start'] + (actor['vit'] * 12)) + actor['permanent_bonus_hp']
-    actor['force_damage_current'] = actor['force_damage_start'] + (actor['force'] * 3)
-    actor['miss_damage_chance'] = (actor['dex']  / 100)
-    actor['crit_damage_chance'] = (actor['dex'] * 0.007)
+    actor['cur_vit'] = actor['vit'] + actor['health_boost'] + actor['pos_vit']
+    actor['cur_dex'] = actor['dex'] + actor['dex_boost'] + actor['pos_dex']
+    actor['cur_force'] = actor['force'] + actor['force_boost'] + actor['pos_force']
+    actor['cur_def'] += actor['protect_boost'] + actor['def'] + actor['def_boost']
+    actor['current_max_health'] = (actor['max_health_start'] + (actor['cur_vit'] * 12)) + actor['permanent_bonus_hp']
+    actor['force_damage_current'] = actor['force_damage_start'] + (actor['cur_force'] * 3)
+    actor['miss_damage_chance'] = (actor['cur_dex']  / 100)
+    actor['crit_damage_chance'] = (actor['cur_dex'] * 0.007)
     actor['damage_crit'] = actor['force_damage_current'] * 1.8
-    actor['xp_required'] = int(80 * (actor['current_level'] ** 1.5) + (actor['current_level'] * 30))
+    actor['xp_required'] = int(90 * (actor['current_level'] ** 1.5) + (actor['current_level'] * 30))
 
 
 def update_dungeon_eq(level_part, actor):
@@ -65,10 +65,10 @@ def print_stats(actor):
           f"\n>>>Имя: {actor['name']}"
           f"\n>>>Текущее/максимальное hp: {actor['current_health']}/{actor['current_max_health']}"
           f"\n>>>Урон: {actor['force_damage_start']} + {actor['force']} * 3 = {actor['force_damage_current']}"
-          f"\n>>>Ловкость: {actor['dex']} + ({actor['dex_boost']} от снаряжения)"
-          f"\n>>>Сила: {actor['force']} + ({actor['force_boost']} от снаряжения)"
-          f"\n>>>Живучесть: {actor['vit']} + ({actor['health_boost']} от снаряжения)"
-          f"\n>>>Защита: {actor['def']} + ({actor['protect_boost']} от снаряжения)"
+          f"\n>>>Ловкость: {actor['cur_dex']} + ({actor['dex_boost']} от снаряжения)"
+          f"\n>>>Сила: {actor['cur_force']} + ({actor['force_boost']} от снаряжения)"
+          f"\n>>>Живучесть: {actor['cur_vit']} + ({actor['health_boost']} от снаряжения)"
+          f"\n>>>Защита: {actor['cur_def']} + ({actor['protect_boost']} от снаряжения)"
           f"\n>>>---------------------------------------------------------------<<<"
           f"\n>>>Текущий/Максимальный уровень: {actor['current_level']}/{actor['max_level']}"
           f"\n>>>Опыта до следующего уровня: {actor["exp_current"]}/{actor['xp_required']}"
@@ -136,20 +136,19 @@ def level_up(actor):
             user_choice = input('\n>>> 1,2,3,4: ').lower().strip()
 
         if user_choice == '1':
-            actor['vit'] += 1
+            actor['pos_vit'] += 1
 
         elif user_choice == '2':
-            actor['dex'] += 1
+            actor['pos_dex'] += 1
 
         elif user_choice == '3':
-            actor['def'] += 1
+            actor['pos_def'] += 1
 
         elif user_choice == '4':
-            actor['force'] += 1
+            actor['pos_force'] += 1
 
-
-    update_character_stats(actor)
     actor['current_health'] = actor['current_max_health']
+    update_character_stats(actor)
 
 def is_dead(actor):
     return actor['current_health'] <= 0
@@ -168,6 +167,7 @@ def sudden_event(events, actor):
         actor['current_max_health'] += events[event_cur]['increase']
         actor['current_health'] -= events[event_cur]['reduce']
 
+        actor['current_health'] = round(actor['current_health'])
         print(f'\n>>>[Информация] Текущее максимальное здоровье: {actor['current_max_health']}')
         print(f'>>>[Информация] Текущее здоровье: {actor['current_health']}')
         actor['permanent_bonus_hp'] += events[event_cur]['increase']
@@ -237,7 +237,7 @@ def fight_final_boss(scene, level_part, actor):
     health_enemy = scene[level_part]['enemies']['enemy_boss_health']
     current_health_enemy = health_enemy
     enemy_reward = scene[level_part]['enemies']['enemy_boss_reward']
-    character_def = actor['def'] / 100
+    character_def = actor['cur_def'] / 100
     enemy_def = scene[level_part]['enemies']['protect_boss'] / 100
 
     while current_health_enemy > 0:
@@ -541,6 +541,10 @@ character = {
     'points': 3,
     'hp_bottles': 0,
     'permanent_bonus_hp': 0,
+    'pos_force': 0,
+    'pos_dex': 0,
+    'pos_vit': 0,
+    'pos_def': 0,
 
 
     'miss_damage_desc_1':"\n>>>[УВОРОТ] Резким рывком в сторону вы уворачиваетесь от удара, заставляя врага промахнуться и потерять равновесие.",
@@ -781,7 +785,7 @@ scenes = {
             "damage_enemy_common":(5, 10),
             "reward_enemy_common":(5, 10),
             "health_enemy_common":(40, 50),
-            "exp_enemy_common": 25,
+            "exp_enemy_common": 35,
             'protect_common': 0,
             "crit_enemy_common": 0.06,
             "crit_enemy_common_desc": '\t\n>>>[КРИТ ПО ВАМ] Шепот переходит в пронзительный визг! Вы получили Критический удар!',
@@ -792,7 +796,7 @@ scenes = {
             "enemy_boss_damage":(7, 12),
             "enemy_boss_reward":(7, 12),
             "enemy_boss_health":(50, 60),
-            "enemy_boss_exp": 30,
+            "enemy_boss_exp": 40,
             'protect_boss': 1,
             "enemy_boss_crit": 0.06,
             "enemy_boss_crit_desc": '\t\n>>>[КРИТ ПО ВАМ] Формулы на листке вспыхивают алым пламенем! Вы получили Критический удар!',
@@ -820,7 +824,7 @@ scenes = {
             "damage_enemy_common": (8, 13),
             "reward_enemy_common": (8, 13),
             "health_enemy_common": (60, 70),
-            "exp_enemy_common": 35,
+            "exp_enemy_common": 50,
             'protect_common': 1,
             "crit_enemy_common": 0.07,
             "crit_enemy_common_desc": '\t\n>>>[КРИТ ПО ВАМ] Книга раскрывается на странице с сокрушительным заклятьем! Крит!',
@@ -831,8 +835,8 @@ scenes = {
             "enemy_boss_name": "Чернильный Фантом",
             "enemy_boss_damage": (10, 15),
             "enemy_boss_reward": (10, 15),
-            "enemy_boss_health": (70, 80),
-            "enemy_boss_exp": 40,
+            "enemy_boss_health": (65, 75),
+            "enemy_boss_exp": 60,
             "enemy_boss_crit": 0.05,
             'protect_boss': 2,
             "enemy_boss_crit_desc": '\t\n>>>[КРИТ ПО ВАМ] Чернильная клякса превращается в острейшую иглу! Критическое попадание!',
@@ -861,7 +865,7 @@ scenes = {
             "damage_enemy_common": (12, 17),
             "reward_enemy_common": (12, 17),
             "health_enemy_common": (80, 90),
-            "exp_enemy_common": 45,
+            "exp_enemy_common": 65,
             'protect_common': 1,
             "crit_enemy_common": 0.08,
             "crit_enemy_common_desc": '\t\n>>>[КРИТ ПО ВАМ] Реагент вскипает с взрывной силой!',
@@ -872,7 +876,7 @@ scenes = {
             "enemy_boss_damage": (15, 18),
             "enemy_boss_reward": (10, 15),
             "enemy_boss_health": (90, 100),
-            "enemy_boss_exp": 40,
+            "enemy_boss_exp": 80,
             'protect_boss': 3,
             "enemy_boss_crit": 0.08,
             "enemy_boss_crit_desc": '\t\n>>>[КРИТ ПО ВАМ] Слизень выплевывает сгусток невероятной едкости! Крит!',
@@ -902,7 +906,7 @@ scenes = {
             "damage_enemy_common": (16, 20),
             "reward_enemy_common": (16, 20),
             "health_enemy_common": (100, 120),
-            "exp_enemy_common": 55,
+            "exp_enemy_common": 90,
             'protect_common': 2,
             "crit_enemy_common": 0.09,
             "crit_enemy_common_desc": '\t\n>>>[КРИТ ПО ВАМ] Теневой клинок наносит удар нечеловеческой точности! Критический удар!',
@@ -913,7 +917,7 @@ scenes = {
             "enemy_boss_damage": (28, 32),
             "enemy_boss_reward": 65,
             "enemy_boss_health": 180,
-            "enemy_boss_exp": 150,
+            "enemy_boss_exp": 200,
             "enemy_boss_crit": 0.09,
             'protect_boss': 4,
             "enemy_boss_crit_desc": '\t\n>>>[КРИТ ПО ВАМ] Дирижерская палочка Маэстро выписывает смертельную арпеджио! Крит!',
@@ -942,7 +946,7 @@ scenes = {
             "damage_enemy_common": (18, 24),
             "reward_enemy_common": (18, 24),
             "health_enemy_common": (120, 140),
-            "exp_enemy_common": 55,
+            "exp_enemy_common": 110,
             'protect_common': 2,
             "crit_enemy_common": 0.1,
             "crit_enemy_common_desc": '\t\n>>>[КРИТ ПО ВАМ] Иллюзия на мгновение становится смертоносной реальностью! Критическое попадание!',
@@ -953,7 +957,7 @@ scenes = {
             "enemy_boss_damage": (32, 36),
             "enemy_boss_reward": 80,
             "enemy_boss_health": 220,
-            "enemy_boss_exp": 190,
+            "enemy_boss_exp": 300,
             "enemy_boss_crit": 0.1,
             'protect_boss': 5,
             "enemy_boss_crit_desc": '\t\n>>>[КРИТ ПО ВАМ] Властитель манипулирует самой реальностью, и пространство разрывает вас! Крит!',
@@ -983,7 +987,7 @@ scenes = {
             "damage_enemy_common": (22, 27),
             "reward_enemy_common": (22, 27),
             'protect_common': 3,
-            "exp_enemy_common": 75,
+            "exp_enemy_common": 130,
             "crit_enemy_common": 0.11,
             "crit_enemy_common_desc": '\t\n>>>[КРИТ ПО ВАМ] Циркуль с идеальной точностью вонзается в вас! Критический удар!',
             "miss_damage_common": 0.09,
@@ -993,7 +997,7 @@ scenes = {
             "enemy_boss_health": 270,
             "enemy_boss_damage": (35, 40),
             'protect_boss': 6,
-            "enemy_boss_reward": 100,
+            "enemy_boss_reward": 400,
             "enemy_boss_exp": 230,
             "enemy_boss_crit": 0.11,
             "enemy_boss_crit_desc": '\t\n>>>[КРИТ ПО ВАМ] Дракон вычисляет траекторию вашего разрушения! Сокрушительный крит!',
@@ -1023,7 +1027,7 @@ scenes = {
             "damage_enemy_common": (26, 30),
             "reward_enemy_common": (26, 30),
             'protect_common': 3,
-            "exp_enemy_common": 85,
+            "exp_enemy_common": 170,
             "crit_enemy_common": 0.12,
             "crit_enemy_common_desc": '\t\n>>>[КРИТ ПО ВАМ] Ядовитые шипы плюща пронзают вас с невероятной силой! Крит!',
             "miss_damage_common": 0.10,
@@ -1034,7 +1038,7 @@ scenes = {
             "enemy_boss_damage": (40, 45),
             'protect_boss': 7,
             "enemy_boss_reward": 120,
-            "enemy_boss_exp": 280,
+            "enemy_boss_exp": 450,
             "enemy_boss_crit": 0.12,
             "enemy_boss_crit_desc": '\t\n>>>[КРИТ ПО ВАМ] Древний голос Хранителя произносит слово смерти! Критический удар!',
             "ability_boss_chance": 0.11,
@@ -1063,7 +1067,7 @@ scenes = {
             "damage_enemy_common": (30, 35),
             "reward_enemy_common": (30, 35),
             'protect_common': 4,
-            "exp_enemy_common": 95,
+            "exp_enemy_common": 190,
             "crit_enemy_common": 0.13,
             "crit_enemy_common_desc": '\t\n>>>[КРИТ ПО ВАМ] Ваш худший кошмар наносит сокрушающий удар! Крит!',
             "miss_damage_common": 0.11,
@@ -1074,7 +1078,7 @@ scenes = {
             "enemy_boss_damage": (45, 50),
             'protect_boss': 8,
             "enemy_boss_reward": 140,
-            "enemy_boss_exp": 330,
+            "enemy_boss_exp": 500,
             "enemy_boss_crit": 0.13,
             "enemy_boss_crit_desc": '\t\n>>>[КРИТ ПО ВАМ] Кошмар материализует вашу самую страшную фобию! Критический ужас!',
             "ability_boss_chance": 0.11,
@@ -1103,7 +1107,7 @@ scenes = {
             "damage_enemy_common": (34, 38),
             "reward_enemy_common": (34, 38),
             'protect_common': 4,
-            "exp_enemy_common": 105,
+            "exp_enemy_common": 290,
             "crit_enemy_common": 0.14,
             "crit_enemy_common_desc": '\t\n>>>[КРИТ ПО ВАМ] Отчаяние студента выливается в яростный, точный удар! Крит!',
             "miss_damage_common": 0.12,
@@ -1113,7 +1117,7 @@ scenes = {
             "enemy_boss_health": 450,
             "enemy_boss_damage": (50, 55),
             'protect_boss': 9,
-            "enemy_boss_reward": 170,
+            "enemy_boss_reward": 700,
             "enemy_boss_exp": 400,
             "enemy_boss_crit": 0.14,
             "enemy_boss_crit_desc": '\t\n>>>[КРИТ ПО ВАМ] Печать Тьютора обжигает вашу душу! Сокрушительный крит!',
