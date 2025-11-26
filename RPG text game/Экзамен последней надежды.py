@@ -566,7 +566,7 @@ dungeon_rewards = {
         'name':"Поношенные Ботфорты",
         'protect_boost': 2,
         'force_boost': 0,
-        'dex_boost': 0,
+        'dex_boost': 1,
         'health_boost': 0,
 
     },
@@ -576,7 +576,7 @@ dungeon_rewards = {
         'name': "Кожаный нагрудник",
         'protect_boost': 3,
         'force_boost': 0,
-        'dex_boost': 0,
+        'dex_boost': 1,
         'health_boost': 0
 
     },
@@ -584,7 +584,7 @@ dungeon_rewards = {
     3: {
 
         'name': "Перчатки Студенческого Труда",
-        'protect_boost': 0,
+        'protect_boost': 1,
         'force_boost': 2,
         'dex_boost': 0,
         'health_boost': 0
@@ -597,7 +597,7 @@ dungeon_rewards = {
         'protect_boost': 0,
         'force_boost': 0,
         'dex_boost': 3,
-        'health_boost': 0
+        'health_boost': 1
 
     },
 
@@ -605,7 +605,7 @@ dungeon_rewards = {
 
         'name': "Амулет Ясного Ума",
         'protect_boost': 0,
-        'force_boost': 0,
+        'force_boost': 1,
         'dex_boost': 2,
         'health_boost': 0
 
@@ -615,7 +615,7 @@ dungeon_rewards = {
 
         'name': "Сапоги Скользящего Времени",
         'protect_boost': 0,
-        'force_boost': 0,
+        'force_boost': 2,
         'dex_boost': 3,
         'health_boost': 0
 
@@ -625,7 +625,7 @@ dungeon_rewards = {
 
         'name': "Кольцо Фитнеса",
         'protect_boost': 0,
-        'force_boost': 0,
+        'force_boost': 2,
         'dex_boost': 0,
         'health_boost': 3
 
@@ -634,9 +634,9 @@ dungeon_rewards = {
     8: {
 
         'name': "Шлем Просветления",
-        'protect_boost': 0,
+        'protect_boost': 1,
         'force_boost': 2,
-        'dex_boost': 0,
+        'dex_boost': 1,
         'health_boost': 2
 
     },
@@ -644,10 +644,10 @@ dungeon_rewards = {
     9: {
 
         'name': "Наручи Железной Воли",
-        'protect_boost': 2,
+        'protect_boost': 3,
         'force_boost': 3,
-        'dex_boost': 2,
-        'health_boost': 2
+        'dex_boost': 3,
+        'health_boost': 4
 
     },
 
