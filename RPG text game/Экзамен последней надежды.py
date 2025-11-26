@@ -86,14 +86,16 @@ def hp_bottle_boost(actor):
 
     if actor['hp_bottles'] > 0:
 
-        if actor['current_health'] + hp_boost < actor['current_max_health']:
+        if actor['current_health'] == actor['current_max_health']:
+            print('\n>>>[Предупреждение] Вам нет необходимости восстанавливать здоровье')
+        elif actor['current_health'] + hp_boost < actor['current_max_health']:
             print(f"\n>>>[Действие] Восстановлено {hp_boost} здоровья")
             actor['current_health'] += hp_boost
+            actor['hp_bottles'] -= 1
         elif actor['current_health'] + hp_boost > actor['current_max_health']:
             print(f"\n>>>[Действие] Восстановлено {actor['current_max_health'] - actor['current_health']} здоровья")
             actor['current_health'] += actor['current_max_health'] - actor['current_health']
-        elif actor['current_health'] == actor['current_max_health']:
-            print('\n>>>[Предупреждение] Вам нет необходимости восстанавливать здоровье')
+            actor['hp_bottles'] -= 1
     else:
 
         print('\n>>>[Предупреждение]У вас нет бутылочек здоровья!')
@@ -102,7 +104,7 @@ def hp_bottle_boost(actor):
 
 def check_lvl_up(actor):
 
-    if actor['exp_current'] >= actor['xp_required']:
+    if actor['exp_current'] >= actor['xp_required'] and actor['current_level'] < actor['max_level']:
         actor['current_level'] += 1
         actor['exp_current'] = actor['exp_current'] - actor['xp_required']
         update_character_stats(actor)
