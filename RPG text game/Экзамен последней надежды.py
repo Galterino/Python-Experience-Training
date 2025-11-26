@@ -12,7 +12,7 @@ def update_character_stats(actor):
     actor['miss_damage_chance'] = (actor['cur_dex']  / 100)
     actor['crit_damage_chance'] = (actor['cur_dex'] * 0.007)
     actor['damage_crit'] = actor['force_damage_current'] * 1.8
-    actor['xp_required'] = int(90 * (actor['current_level'] ** 1.5) + (actor['current_level'] * 30))
+    actor['xp_required'] = int(100 * (actor['current_level'] ** 1.5) + (actor['current_level'] * 30))
 
 
 def update_dungeon_eq(level_part, actor):
