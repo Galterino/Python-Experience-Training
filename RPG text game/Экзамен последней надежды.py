@@ -1,6 +1,6 @@
 import random
 import time
-from math import ceil
+import os
 
 def update_character_stats(actor):
     actor['cur_vit'] = actor['vit'] + actor['health_boost'] + actor['pos_vit']
@@ -147,8 +147,8 @@ def level_up(actor):
         elif user_choice == '4':
             actor['pos_force'] += 1
 
-    actor['current_health'] = actor['current_max_health']
     update_character_stats(actor)
+    actor['current_health'] = actor['current_max_health']
 
 def is_dead(actor):
     return actor['current_health'] <= 0
@@ -1243,7 +1243,9 @@ for level in range(1, 11):
     update_dungeon_eq(level, character)
     update_character_stats(character)
 
+
     input('Enter: Чтобы продолжить...')
+    os.system('cls')
 
 input('\nНажмите любую клавишу чтобы выйти: ')
 
