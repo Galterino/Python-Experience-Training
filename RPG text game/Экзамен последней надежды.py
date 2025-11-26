@@ -634,7 +634,7 @@ dungeon_rewards = {
     8: {
 
         'name': "Шлем Просветления",
-        'protect_boost': 1,
+        'protect_boost': 2,
         'force_boost': 2,
         'dex_boost': 1,
         'health_boost': 2
