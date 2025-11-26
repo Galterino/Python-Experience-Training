@@ -6,7 +6,7 @@ def update_character_stats(actor):
     actor['cur_vit'] = actor['vit'] + actor['health_boost'] + actor['pos_vit']
     actor['cur_dex'] = actor['dex'] + actor['dex_boost'] + actor['pos_dex']
     actor['cur_force'] = actor['force'] + actor['force_boost'] + actor['pos_force']
-    actor['cur_def'] += actor['protect_boost'] + actor['def'] + actor['def_boost']
+    actor['cur_def'] = actor['protect_boost'] + actor['def'] + actor['pos_def']
     actor['current_max_health'] = (actor['max_health_start'] + (actor['cur_vit'] * 12)) + actor['permanent_bonus_hp']
     actor['force_damage_current'] = actor['force_damage_start'] + (actor['cur_force'] * 3)
     actor['miss_damage_chance'] = (actor['cur_dex']  / 100)
