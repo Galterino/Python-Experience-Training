@@ -2,6 +2,7 @@ import random
 import time
 import os
 
+
 def update_character_stats(actor):
     actor['cur_vit'] = actor['vit'] + actor['health_boost'] + actor['pos_vit']
     actor['cur_dex'] = actor['dex'] + actor['dex_boost'] + actor['pos_dex']
@@ -23,7 +24,6 @@ def update_dungeon_eq(level_part, actor):
     actor['protect_boost'] += reward['protect_boost']
 
 
-
 def event_choice(scene):
 
     sudden_event_chance = scene['probability_sudden']
@@ -38,6 +38,7 @@ def event_choice(scene):
     else:
         return 'nothing'
 
+
 def check_input():
 
     choice_user = input('\n>>> 1, 2, 3, 4, 5, 6: ').strip()
@@ -49,6 +50,7 @@ def check_input():
 
     return choice_user
 
+
 def step_print():
 
     actions = ['Повернуть налево', "Повернуть направо", "Осмотреться", "Идти вперед"]
@@ -57,6 +59,7 @@ def step_print():
     print()
     for action in actions:
         print(f"{action}", end=' | ')
+
 
 def print_stats(actor):
     actor['current_health'] = round(actor['current_health'])
@@ -78,6 +81,7 @@ def print_stats(actor):
           f"\n>>>Вероятность уклонения: {actor['miss_damage_chance']:.2%}"
           f"\n>>>Вероятность нанесения крит урона: {actor['crit_damage_chance']:.2%}"
           f"\n>>>---------------------------------------------------------------<<<")
+
 
 def hp_bottle_boost(actor):
 
@@ -102,6 +106,7 @@ def hp_bottle_boost(actor):
 
         print(f"\nТекущее/максимальное hp: {actor['current_health']}/{actor['current_max_health']}")
 
+
 def check_lvl_up(actor):
 
     if actor['exp_current'] >= actor['xp_required'] and actor['current_level'] < actor['max_level']:
@@ -109,6 +114,7 @@ def check_lvl_up(actor):
         actor['exp_current'] = actor['exp_current'] - actor['xp_required']
         update_character_stats(actor)
         level_up(actor)
+
 
 def level_up(actor):
 
@@ -119,8 +125,6 @@ def level_up(actor):
     time.sleep(1)
 
     for _ in range(actor['points']):
-
-
 
         print(
             '\n1. Живучесть: + 12 hp к максимальному за каждое очко'
@@ -150,8 +154,10 @@ def level_up(actor):
     update_character_stats(actor)
     actor['current_health'] = actor['current_max_health']
 
+
 def is_dead(actor):
     return actor['current_health'] <= 0
+
 
 def sudden_event(events, actor):
 
@@ -344,6 +350,7 @@ def fight_final_boss(scene, level_part, actor):
 
         time.sleep(2)
 
+
 def fight_process(pattern_enemy, actor):
     count_act = 1
     appearance_desc = random.choice(pattern_enemy['appearance_desc_tuple'])
@@ -452,6 +459,7 @@ def fight_process(pattern_enemy, actor):
         time.sleep(2)
 
 
+
 def fight(scene_all, level_part, actor):
     random_choice_enemy = round(random.random(), 2)
 
@@ -466,6 +474,7 @@ def fight(scene_all, level_part, actor):
         pattern = common_enemy_pattern(scene_all, level_part)
 
         fight_process(pattern, actor)
+
 
 def common_enemy_pattern(scene, level_part):
 
@@ -491,6 +500,7 @@ def common_enemy_pattern(scene, level_part):
     }
 
     return enemy_pattern
+
 
 def boss_enemy_pattern(scene, level_part):
 
@@ -558,6 +568,7 @@ character = {
     'crit_damage_tuple': ('crit_damage_desc_1', 'crit_damage_desc_2', 'crit_damage_desc_3') ,
 
 }
+
 
 dungeon_rewards = {
 
@@ -653,7 +664,7 @@ dungeon_rewards = {
 
     10: {
 
-        'name': "Зачетка Юлии Игоревны",
+        'name': "Зачет по демонстрационному экзамену",
         'protect_boost': 10,
         'force_boost': 10,
         'dex_boost': 10,
@@ -664,6 +675,7 @@ dungeon_rewards = {
 
 
 }
+
 
 sudden_events = {
 
@@ -1135,48 +1147,34 @@ scenes = {
 
     10: {
 
-        'name_dungeon': "Кабинет Юлии Игоревны",
+        'name_dungeon': "ГЛАВНЫЙ СЕРВЕРНЫЙ ЗАЛ",
 
-        'description': "\n>>> Вы замираете на пороге. Это – та самая комната."
-                       "\nЗнакомая до боли, но теперь все в ней доведено до сюрреалистичного абсолюта."
-                       "\nСтеллажи с конспектами и методичками уходят в заоблачную высь, теряясь где-то в районе потолка,"
-                       "\nпревращенного в звездную карту из светящихся оценок."
-                       "\nВ воздухе медленно плавают, как осенние листья, зачетки и листки с долгами."
-                       "\nВоздух густой, настоянный на аромате старой бумаги, строгого парфюма и несданных вовремя работ."
-                       "\n\nЗа массивным учительским столом, заваленным кипами тестов, сидит Она. Спиной к вам. "
-                       "\nВ ее руке – красная ручка, которая с мертвой точки выводит замысловатые узоры на полях чьей-то судьбы."
-                       "\nТишина стоит такая, что слышно, как муха пролетает где-то на 15 этаже."
-                       "\nСтул с глухим скрипом поворачивается."
-                       "\nИ вот ее взгляд, тот самый, от которого у целого потока студентов стынет кровь, устремляется на вас."
-                       "\nНа губах играет едва заметная, но безжалостная улыбка."
-                       '\n\n«Ну что же, — раздается голос, холодный и четкий, как формулировка в билете.'
-                       '\n— Я так понимаю, это ваша пересдача?'
-                       '\nЧто ж, давайте проверим, чему вы все-таки научились за время своего... академического отпуска».',
+        'description': "\n>>> Вы входите в святая святых — просторное помещение, заставленное серверными стойками."
+                       "\nВоздух гудит от вентиляторов и пахнет озоном. На стенах мерцают мониторы с бегущими строками кода."
+                       "\nВ центре зала, в кресле с колесиками, сидит Системный Администратор АКСЖКХ."
+                       "\nОн медленно разворачивается к вам, поправляя очки. В одной руке он держит кружку с надписью «Я всё починю»,"
+                       "\nв другой — серверную стойку как щит."
+                       '\nА, опять несанкционированное проникновение в систему,» — его голос спокоен, но в глазах горит огонь человека,'
+                       '\nкоторый видел все виды глупостей. «Щас я тебе права доступа понижу до гостевых... Или просто забаню. Навсегда.',
 
         'enemies': {
 
-            "enemy_boss_name": "Юлия Игоревна",
+            "enemy_boss_name": "Главный сисадмин АКСЖКХ",
             "enemy_boss_health": 1500,
             "enemy_boss_damage": (70, 85),
             'protect_boss': 20,
             "enemy_boss_reward": 1000,
             "enemy_boss_exp": 2000,
             "enemy_boss_crit": 0.20,
-            "enemy_boss_crit_desc": "\n>>>[КРИТ ПО ВАМ] Юлия Игоревна поднимает бровь."
-                                    "\n'Это что за примитивный подход? На третьем курсе уже так не мыслят!'"
-                                    "\n — ее замечание обрушивается на вас как удар молотка по неподготовленному домашнему заданию."
-                                    "\n СОКРУШИТЕЛЬНЫЙ КРИТИЧЕСКИЙ УРОН!",
+            "enemy_boss_crit_desc": "\n>>>[КРИТ ПО ВАМ] «А теперь — аппаратный сброс!»"
+                                    "\n — СисАдмин бьет серверной стойкой по вашей голове. Критическое попадание!",
             "miss_damage_boss": 0.15,
-            "miss_damage_boss_desc": "\n>>>[УВОРОТ ВРАГА ОТ УДАРА] Вы яростно атакуете,"
-                                     "\nно Юлия Игоревна просто поправляет платок в нагрудном кармане"
-                                     "\nи делает шаг в сторону с грацией кошки, обходящей лужу."
-                                     "\n'Не туда, не туда... Сначала подумайте, потом действуйте'. Ваша атака проходит мимо!",
-            "ability_boss_chance_total": 0.05,
+            "miss_damage_boss_desc": "\n>>>[УВОРОТ ВРАГА ОТ УДАРА] «Бэкапы делаются не просто так!» — вы поражаете СисАдмина,"
+                                     "\nно он мгновенно восстанавливается из резервной копии, как будто ничего не произошло.",
+            "ability_boss_chance_total": 0.03,
             "ability_boss_chance_total_desc": "\n>>>[Активация способности - смертельная атака]<<< "
-                                              "\nВнезапно ее глаза вспыхивают."
-                                              "\n'А теперь — ВНЕПЛАНОВАЯ КОНТРОЛЬНАЯ! Без подготовки!"
-                                              "\nНа всю оставшуюся жизнь!' Она щелкает пальцами,"
-                                              "\nи пространство вокруг вас сжимается от ужаса перед чистым листом.",
+                                              "\n За нарушение правил использования..."
+                                              "\n — СисАдмин достает гигантский молот с надписью «BAN». «Пермабан!»",
 
         },
 
@@ -1185,7 +1183,6 @@ scenes = {
     },
 
 }
-
 
 user_name = input("Введите имя игрового персонажа: ")
 character["name"] = user_name
